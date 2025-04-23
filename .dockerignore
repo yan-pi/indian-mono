@@ -1,0 +1,16 @@
+.git
+.gitignore
+node_modules
+**/node_modules
+.next
+**/.next
+out
+**/out
+build
+**/build
+.turbo
+**/.turbo
+dist
+**/dist
+coverage
+**/coverage

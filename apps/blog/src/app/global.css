@@ -1,0 +1,69 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/preset.css";
+
+@source '../../node_modules/fumadocs-ui/dist/**/*.js';
+
+.font-serif {
+  font-family: var(--font-instrument-serif);
+}
+
+@theme {
+  --color-fd-background: #f5f7f3; /* tom claro com um toque esverdeado, inspirado na luz da floresta */
+  --color-fd-foreground: #2d3025; /* escuro levemente esverdeado, ótima legibilidade */
+  --color-fd-border: #d5d6cc; /* tom das pedras claras e neblina */
+  --color-fd-ring: #6b8b58; /* verde musgo vivo */
+  --color-fd-primary: #6b8b58; /* verde natural vibrante */
+  --color-fd-primary-foreground: #f5f7f3;
+  --color-fd-secondary: #eae7dc; /* tom de luz dourada das folhas iluminadas */
+  --color-fd-secondary-foreground: #2d3025;
+  --color-fd-accent: #b5a27b; /* dourado sutil da luz entre as folhas */
+  --color-fd-accent-foreground: #1e1f16;
+  --color-fd-muted: #f0f1eb;
+  --color-fd-muted-foreground: #44483a;
+  --color-fd-card: #ffffff;
+  --color-fd-card-foreground: #2d3025;
+  --color-fd-popover: #f5f7f3;
+  --color-fd-popover-foreground: #2d3025;
+}
+
+.dark {
+  --color-fd-background: #1b1d1a; /* tom escuro inspirado nas sombras da floresta */
+  --color-fd-foreground: #d8dccf; /* tom claro esverdeado, suave nos olhos */
+  --color-fd-border: #2c2e2b; /* contraste baixo porém perceptível */
+  --color-fd-ring: #a7cb91; /* verde claro vivo no escuro */
+  --color-fd-primary: #a7cb91; /* verde iluminado em fundo escuro */
+  --color-fd-primary-foreground: #1b1d1a;
+  --color-fd-secondary: #2a2c26;
+  --color-fd-secondary-foreground: #d8dccf;
+  --color-fd-accent: #9e8d63; /* dourado musgo sutil */
+  --color-fd-accent-foreground: #1e1f16;
+  --color-fd-muted: #21231f;
+  --color-fd-muted-foreground: #9aa190;
+  --color-fd-card: #1e1f1c;
+  --color-fd-card-foreground: #d8dccf;
+  --color-fd-popover: #1b1d1a;
+  --color-fd-popover-foreground: #d8dccf;
+}
+
+.prose {
+  --tw-prose-links: var(--color-fd-primary);
+}
+
+.dark .prose pre {
+  background-color: #00000;
+}
+
+.bg-grid-pattern {
+  background-image:
+    linear-gradient(to right, rgba(255, 206, 132, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 206, 132, 0.1) 1px, transparent 1px);
+}
+
+@layer base {
+  a {
+    @apply [overflow-wrap:anywhere];
+  }
+  code {
+    font-family: var(--font-jetbrains-mono);
+  }
+}

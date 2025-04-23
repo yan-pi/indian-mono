@@ -1,0 +1,39 @@
+{
+  "ui": "tui",
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env"],
+  "globalEnv": [
+    "NODE_ENV",
+    "DATABASE_URI",
+    "PAYLOAD_SECRET",
+    "NEXT_PUBLIC_SERVER_URL",
+    "PORT",
+    "NEXT_PUBLIC_API_URL",
+    "NEXT_PUBLIC_BASE_URL"
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "dist/**"],
+      "env": [
+        "DATABASE_URI",
+        "PAYLOAD_SECRET",
+        "NEXT_PUBLIC_SERVER_URL",
+        "PORT",
+        "NEXT_PUBLIC_API_URL",
+        "NEXT_PUBLIC_BASE_URL"
+      ]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["^build"]
+    },
+    "lint": {},
+    "format": {},
+    "test": {
+      "dependsOn": ["build"],
+      "inputs": ["src/**/*.tsx", "src/**/*.ts", "test/**/*.ts", "test/**/*.tsx"]
+    }
+  }
+}
