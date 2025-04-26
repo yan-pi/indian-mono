@@ -2,6 +2,7 @@ import { getSortedByDatePosts, getPostsByTag, getTags } from "@/lib/source";
 import { InfinitePostsList, type Post } from "@/components/infinite-post-list";
 import { TagFilter } from "@/components/tag-filter";
 import { TagJsonLd } from "@/components/json-ld";
+import { Suspense } from "react";
 import { postsPerPage } from "@/app/layout.config";
 import { notFound } from "next/navigation";
 
@@ -20,20 +21,22 @@ function serializePost(post: any): Post {
 
 export const dynamicParams = false;
 
-export default async function UnifiedPostsPage({
-  params,
-  searchParams,
-}: {
-  params: { slug?: string[] };
-  searchParams: { [key: string]: string | string[] | undefined };
+// Match the PageProps constraint by making both params and searchParams Promises
+export default async function UnifiedPostsPage(props: {
+  params: Promise<{ slug?: string[] }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const slug = params.slug;
-  // Access the tags parameter asynchronously
-  const tagsParam = searchParams.tags
-    ? typeof searchParams.tags === "string"
-      ? searchParams.tags
+  const resolvedParams = await props.params;
+  const resolvedSearchParams = await props.searchParams;
+  const slug = resolvedParams.slug;
+
+  // Access the tags parameter from resolved search params
+  const tagsParam = resolvedSearchParams.tags
+    ? typeof resolvedSearchParams.tags === "string"
+      ? resolvedSearchParams.tags
       : undefined
     : undefined;
+
   const isTagView = slug && slug.length > 0;
 
   let pageTitle = "All Posts";
@@ -95,17 +98,16 @@ export default async function UnifiedPostsPage({
       {/* Componente de filtro de tags */}
       <TagFilter tags={allTags} selectedTag={selectedTags} />
 
-      {/* Lista de posts */}
-      <InfinitePostsList
-        allPosts={serializedPosts}
-        initialPosts={initialPosts}
-        title={pageTitle}
-      />
-
+      <Suspense fallback={<div>Loading posts...</div>}>
+        {/* Lista de posts */}
+        <InfinitePostsList
+          allPosts={serializedPosts}
+          initialPosts={initialPosts}
+          title={pageTitle}
+        />
+      </Suspense>
       {/* JSON-LD para SEO */}
       {isTagView && <TagJsonLd tag={pageTitle} />}
     </>
   );
 }
-
-// O resto do código permanece o mesmo (generateStaticParams e generateMetadata)

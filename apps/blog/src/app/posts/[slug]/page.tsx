@@ -3,6 +3,8 @@ import { LinkPreview } from "@/components/link-preview";
 import { TagCard } from "@/components/tag-card";
 import { getPost, getPosts } from "@/lib/source";
 import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import {
   ImageZoom,
   type ImageZoomProps,
@@ -17,7 +19,15 @@ import {
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-export const dynamicParams = false;
+// export const dynamicParams = false;
+
+const ClientMDXWrapper = dynamic(
+  () =>
+    import("@/components/client-mdx-wrapper").then(
+      (mod) => mod.ClientMDXWrapper,
+    ),
+  { ssr: true, suspense: true },
+);
 
 const Page = async (props: { params: Promise<{ slug: string }> }) => {
   const params = await props.params;
@@ -62,23 +72,25 @@ const Page = async (props: { params: Promise<{ slug: string }> }) => {
         ))}
       </div>
       <PostsBody>
-        <MDX
-          components={{
-            ...defaultMdxComponents,
-            img: (props: ImageZoomProps) => <ImageZoom {...props} />,
-            pre: ({ ...props }) => (
-              <CodeBlock
-                {...props}
-                viewportProps={{
-                  className: "max-h-fit",
-                }}
-              >
-                <Pre>{props.children}</Pre>
-              </CodeBlock>
-            ),
-            LinkPreview,
-          }}
-        />
+        <Suspense fallback={<div>Loading content...</div>}>
+          <MDX
+            components={{
+              ...defaultMdxComponents,
+              img: (props: ImageZoomProps) => <ImageZoom {...props} />,
+              pre: ({ ...props }) => (
+                <CodeBlock
+                  {...props}
+                  viewportProps={{
+                    className: "max-h-fit",
+                  }}
+                >
+                  <Pre>{props.children}</Pre>
+                </CodeBlock>
+              ),
+              LinkPreview,
+            }}
+          />
+        </Suspense>
       </PostsBody>
       <PostJsonLd post={post} />
     </PostsPage>
