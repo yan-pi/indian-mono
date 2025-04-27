@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import { postsPerPage } from "@/app/layout.config";
 import { PostCard } from "@/components/post-card";
 
@@ -21,6 +21,22 @@ interface InfinitePostsListProps {
 }
 
 export function InfinitePostsList({
+  initialPosts,
+  allPosts,
+  title = "Collections",
+}: InfinitePostsListProps) {
+  return (
+    <Suspense fallback={<div>Loading posts...</div>}>
+      <InfinitePostsListContent
+        initialPosts={initialPosts}
+        allPosts={allPosts}
+        title={title}
+      />
+    </Suspense>
+  );
+}
+
+function InfinitePostsListContent({
   initialPosts,
   allPosts,
   title = "Collections",

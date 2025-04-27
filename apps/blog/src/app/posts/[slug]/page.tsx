@@ -4,7 +4,6 @@ import { TagCard } from "@/components/tag-card";
 import { getPost, getPosts } from "@/lib/source";
 import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock";
 import { Suspense } from "react";
-import dynamic from "next/dynamic";
 import {
   ImageZoom,
   type ImageZoomProps,
@@ -18,16 +17,6 @@ import {
 } from "fumadocs-ui/page";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-
-// export const dynamicParams = false;
-
-const ClientMDXWrapper = dynamic(
-  () =>
-    import("@/components/client-mdx-wrapper").then(
-      (mod) => mod.ClientMDXWrapper,
-    ),
-  { ssr: true, suspense: true },
-);
 
 const Page = async (props: { params: Promise<{ slug: string }> }) => {
   const params = await props.params;
@@ -47,8 +36,6 @@ const Page = async (props: { params: Promise<{ slug: string }> }) => {
   const lastUpdate = lastModified ? new Date(lastModified) : undefined;
   const tags = post.data.tags ?? [];
 
-  // const path = `content/${post.file.path}`;
-
   const MDX = post.data.body;
 
   return (
@@ -66,11 +53,13 @@ const Page = async (props: { params: Promise<{ slug: string }> }) => {
       <PostsDescription className="mb-0">
         {post.data.description}
       </PostsDescription>
-      <div className="flex gap-2 flex-wrap mb-8">
-        {tags.map((tag) => (
-          <TagCard name={tag} key={tag} />
-        ))}
-      </div>
+      <Suspense fallback={<div>Loading tags...</div>}>
+        <div className="flex gap-2 flex-wrap mb-8">
+          {tags.map((tag) => (
+            <TagCard name={tag} key={tag} />
+          ))}
+        </div>
+      </Suspense>
       <PostsBody>
         <Suspense fallback={<div>Loading content...</div>}>
           <MDX
@@ -87,12 +76,18 @@ const Page = async (props: { params: Promise<{ slug: string }> }) => {
                   <Pre>{props.children}</Pre>
                 </CodeBlock>
               ),
-              LinkPreview,
+              LinkPreview: (props) => (
+                <Suspense fallback={<div>Loading preview...</div>}>
+                  <LinkPreview {...props} />
+                </Suspense>
+              ),
             }}
           />
         </Suspense>
       </PostsBody>
-      <PostJsonLd post={post} />
+      <Suspense fallback={null}>
+        <PostJsonLd post={post} />
+      </Suspense>
     </PostsPage>
   );
 };
