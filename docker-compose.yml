@@ -9,15 +9,16 @@ services:
       - app-network
     restart: unless-stopped
 
-  quartz:
-    build:
-      context: .
-      dockerfile: apps/quartz/Dockerfile
-    ports:
-      - "8080:8080"
-    networks:
-      - app-network
-    restart: unless-stopped
+  # quartz:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/quartz/Dockerfile
+  #   ports:
+  #     - "8080:8080"
+  #   networks:
+  #     - app-network
+  #   restart: unless-stopped
+
   # admin:
   #   build:
   #     context: .
